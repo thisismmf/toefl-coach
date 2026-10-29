@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TOEFL Coach</title>
+<link rel="stylesheet" href="/static/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <div class="brand-mark">TC</div>
+      <div><h1>TOEFL Coach</h1><small>2026 format · local</small></div>
+    </div>
+
+    <div>
+      <div class="sec-label">Model</div>
+      <div class="field">
+        <label for="provider">Provider</label>
+        <select id="provider"></select>
+      </div>
+      <div class="field">
+        <label for="model">Model <span id="modelStatus" class="mstat"></span></label>
+        <input id="model" list="modellist" placeholder="model name" autocomplete="off">
+        <datalist id="modellist"></datalist>
+      </div>
+      <div class="field" id="wrapBase" hidden>
+        <label for="baseUrl">Base URL</label>
+        <input id="baseUrl" placeholder="https://api.openai.com/v1">
+      </div>
+      <div class="field" id="wrapKey" hidden>
+        <label for="apiKey">API key</label>
+        <input id="apiKey" type="password" placeholder="sk-…">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="temp">Temp</label>
+          <input id="temp" type="number" step="0.1" min="0" max="1.5" value="0.2">
+        </div>
+        <div class="field">
+          <label for="ctx">Context</label>
+          <input id="ctx" type="number" step="1024" min="2048" value="8192">
+        </div>
+      </div>
+      <div class="row2">
+        <button class="btn btn-ghost btn-sm" id="testModel">Test</button>
+        <button class="btn btn-ghost btn-sm" id="refreshModels">Refresh</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;flex:1;min-height:0">
+      <div class="sec-label">History</div>
+      <div class="hist" id="history"></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-view="new">New correction</button>
+      <button class="tab" data-view="grade">1 · Score &amp; errors</button>
+      <button class="tab" data-view="model">2 · 5/5 answer</button>
+      <button class="tab" data-view="lesson">3 · Lesson &amp; drills</button>
+    </div>
+
+    <!-- ── NEW ── -->
+    <section id="view-new">
+      <div class="tabs" id="taskTabs" style="margin-bottom:16px">
+        <button class="tab on" data-task="email">Write an Email</button>
+        <button class="tab" data-task="discussion">Academic Discussion</button>
+        <button class="tab" data-task="speaking">Take an Interview</button>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <h3 id="formTitle">Write an Email</h3>
+          <span class="sub" id="formHint">Paste the task prompt and your answer</span>
+        </div>
+
+        <div class="field">
+          <label for="question" id="qLabel">Task prompt (including all bullet points)</label>
+          <textarea id="question" rows="6" placeholder="You recently stayed at a hotel…&#10;Write an email to Ms. Thompson. In your email:&#10;• …&#10;• …&#10;• …"></textarea>
+        </div>
+
+        <div id="classmates" hidden>
+          <div class="grid2">
+            <div class="field">
+              <label for="classA">Classmate A</label>
+              <textarea id="classA" rows="4" placeholder="Claire: Global expansion is vital because…"></textarea>
+            </div>
+            <div class="field">
+              <label for="classB">Classmate B</label>
+              <textarea id="classB" rows="4" placeholder="Paul: A local focus supports…"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="response" id="rLabel">Your answer</label>
+          <textarea id="response" rows="11" placeholder="Paste your response here…"></textarea>
+          <div class="hint" id="counter">0 words · 0 sentences</div>
+        </div>
+
+        <div class="field" id="durWrap" hidden>
+          <label for="duration">Recording length in seconds (optional — enables pace analysis)</label>
+          <input id="duration" type="number" step="0.1" min="1" placeholder="45">
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btnGrade">Score &amp; find errors</button>
+          <button class="btn btn-ghost" id="btnSample">Load a sample</button>
+          <button class="btn btn-ghost" id="btnClear">Clear</button>
+        </div>
+        <div class="hint" style="margin-top:10px">
+          Each stage is a separate run so a small local model never has to do
+          everything at once. Score first, then generate the 5/5 answer, then the lesson.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── GRADE ── -->
+    <section id="view-grade" hidden><div id="gradeOut"></div></section>
+    <!-- ── MODEL ── -->
+    <section id="view-model" hidden><div id="modelOut"></div></section>
+    <!-- ── LESSON ── -->
+    <section id="view-lesson" hidden><div id="lessonOut"></div></section>
+  </main>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>
