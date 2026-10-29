@@ -5,15 +5,23 @@ machine against your own models, and can be pointed at a commercial API whenever
 you want a stronger grader.
 
 ```bash
-./run.sh up        # start + open the browser
+./run.sh up        # start + open the browser (auto-creates venv & .env)
 ./run.sh down      # stop
+./run.sh restart   # restart
 ./run.sh status    # health + available models
 ./run.sh logs      # follow the log
-./run.sh restart
+./run.sh install   # create the venv and install dependencies only
 ./run.sh reset     # wipe saved runs and charts
 ```
 
 Default address: <http://127.0.0.1:8781>
+
+### Prerequisites
+
+- Python 3.10+ (with `venv` or `uv`)
+- An LLM provider:
+  - Local [Ollama](https://ollama.com) (e.g. `ollama run llama3.1:8b` or `qwen3-vl:8b`), or
+  - An API key for Ollama Cloud, an OpenAI-compatible endpoint (OpenRouter, Groq, etc.), or Anthropic.
 
 ---
 
@@ -25,7 +33,7 @@ stage is its own run with its own prompt chain.
 
 | Stage | What you get |
 |---|---|
-| **1 · Score & errors** | ETS-band score, per-dimension sub-scores, grammar / vocabulary / mechanics error tables, task-completion analysis, the official ETS 2026 checklist, and four matplotlib charts |
+| **1 · Score & errors** | ETS-band score, per-dimension sub-scores, grammar / vocabulary / mechanics (or delivery for speaking) error tables, task-completion analysis, the official ETS 2026 checklist, and four matplotlib charts |
 | **2 · 5/5 answer** | Your own ideas extracted, a minimally-corrected version of your text, and a full-score model answer **built from your ideas** — plus a thought-group delivery script for speaking |
 | **3 · Lesson & drills** | For each error category: a short lesson organised by *pattern* (with the Persian-interference root cause), then 8–12 targeted exercises with answers, plus a 7-day study plan |
 
@@ -57,7 +65,7 @@ Python: measure          → words, sentences, clauses, transitions, typos,
 LLM 1:  task completion  → bullet coverage / contribution / forced choice
 LLM 2:  grammar errors   → JSON array
 LLM 3:  vocabulary errors→ JSON array
-LLM 4:  mechanics errors → JSON array (merged with the Python typo scan)
+LLM 4:  mechanics / delivery errors → JSON array (merged with the Python typo scan for writing)
 LLM 5:  sub-scores       → one score per ETS dimension
 LLM 6:  verdict          → final band, limiter, strengths, 3-step plan
 Python: charts
@@ -172,6 +180,7 @@ app/
   rubrics.py     ETS 2026 criteria, bands, checklists, target lengths
   charts.py      matplotlib figures
   db.py          SQLite run store
+  export.py      Markdown report generation for export
 static/          single-page UI (no build step)
 data/            SQLite database, generated charts, server log — safe to delete
 ```
@@ -188,4 +197,3 @@ data/            SQLite database, generated charts, server log — safe to delet
 - The server binds to `127.0.0.1` — it is not reachable from the network. Change
   `TOEFL_HOST` in `.env` if you want that.
 - `./run.sh reset` deletes the database and charts; the code is untouched.
-# toefl-coach
